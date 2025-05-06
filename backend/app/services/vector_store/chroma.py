@@ -1,7 +1,8 @@
 from typing import List, Any
 from langchain_core.documents import Document
 from langchain_core.embeddings import Embeddings
-from langchain_chroma import Chroma
+# from langchain_chroma import Chroma
+from langchain.vectorstores import Chroma
 import chromadb 
 from app.core.config import settings
 
@@ -16,12 +17,17 @@ class ChromaVectorStore(BaseVectorStore):
             host=settings.CHROMA_DB_HOST,
             port=settings.CHROMA_DB_PORT,
         )
-        
+        # self._store = Chroma(
+        #     client=chroma_client,
+        #     collection_name=collection_name,
+        #     embedding_function=embedding_function,
+        # )
         self._store = Chroma(
-            client=chroma_client,
+            client_settings=chromadb.config.Settings(),
             collection_name=collection_name,
             embedding_function=embedding_function,
         )
+ 
     def add_documents(self, documents: List[Document]) -> None:
         """Add documents to Chroma"""
         self._store.add_documents(documents)
